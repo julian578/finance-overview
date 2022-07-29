@@ -68,4 +68,9 @@ public class TransactionController {
         return transactionService.getTotalBalanceOfCurrentMonth(principal);
     }
 
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Transaction> updateTransaction(@PathVariable(name="id") Long id, Principal principal, @RequestBody TransactionDto transactionDto) {
+        return transactionService.updateTransaction(id, transactionDto, principal);
+    }
+
 }

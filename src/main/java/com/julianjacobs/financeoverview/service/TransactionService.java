@@ -143,6 +143,28 @@ public class TransactionService {
         return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    //update subject or value of already created Transaction
+    public ResponseEntity<Transaction> updateTransaction(Long id, TransactionDto transactionDto, Principal principal) {
+
+        try {
+            //check if the Transaction has been created by the authenticated user
+            User user = getUser(principal);
+            if(user != null) {
+                Transaction transaction = transactionRepository.findById(id).orElseThrow(() -> new Exception("Transaction not found"));
+                if (transaction.getUser() == user) {
+                    transaction.setSubject(transactionDto.getSubject());
+                    transaction.setValue(transactionDto.getValue());
+                    transactionRepository.save(transaction);
+                    return new ResponseEntity<>(transaction, HttpStatus.OK);
+                }
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 
     //helper function to extract User from Principal object
     private User getUser(Principal principal) {
